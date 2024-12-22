@@ -6,6 +6,7 @@ import Echo from "./components/echo";
 import { AppBar, Avatar, Button, Container, Select, SelectChangeEvent, Toolbar, Typography, MenuItem } from "@mui/material";
 import { useEffect, useState } from "react";
 
+import "./App.css";
 import { CurrentLocationContext } from "./Contexts";
 import EchoEvents from "./components/echo-events";
 
