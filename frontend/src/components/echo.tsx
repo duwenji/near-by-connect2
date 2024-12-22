@@ -109,7 +109,7 @@ const Echo: FC = () => {
   };
 
   const onSubmit: SubmitHandler<EchoInput> = async (input: EchoInput) => {
-    console.log("sendMessage...", input);
+    console.log("onSubmit...", input);
     if (client != null) {
       console.log(`sending message: ${input.message}`);
       client.send(input.message);
@@ -124,7 +124,7 @@ const Echo: FC = () => {
     console.log(`key: ${e.key}`);
 
     if (e.key === "Enter" && !e.shiftKey) {
-      handleSubmit(sendMessage)(); // this won't be triggered
+      handleSubmit(onSubmit)(); // this won't be triggered
     }
   };
 
