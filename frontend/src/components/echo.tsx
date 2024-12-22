@@ -108,7 +108,7 @@ const Echo: FC = () => {
     setClient(client);
   };
 
-  const sendMessage: SubmitHandler<EchoInput> = async (input: EchoInput) => {
+  const onSubmit: SubmitHandler<EchoInput> = async (input: EchoInput) => {
     console.log("sendMessage...", input);
     if (client != null) {
       console.log(`sending message: ${input.message}`);
@@ -160,8 +160,8 @@ const Echo: FC = () => {
       <Typography variant="subtitle1" sx={{ color: "#808080" }} gutterBottom>
         status: {status}
       </Typography>
-      <form onSubmit={handleSubmit(sendMessage, onError)} noValidate>
-        <Stack direction="row" spacing={2} sx={{ m: 5 }}>
+      <form onSubmit={handleSubmit(onSubmit, onError)} noValidate>
+        <Stack direction="column" spacing={2} sx={{ m: 5 }}>
           <TextField
             id="longitude"
             label="経度"
@@ -176,8 +176,9 @@ const Echo: FC = () => {
             })}
             autoComplete="off"
             sx={{ width: 300 }}
+            error={errors.location?.longitude ? true : false}
+            helperText={errors.location?.longitude?.message}
           />
-          <p>{errors.location?.longitude?.message}</p>
           <TextField
             id="latitude"
             label="緯度"
@@ -192,8 +193,9 @@ const Echo: FC = () => {
             })}
             autoComplete="off"
             sx={{ width: 300 }}
+            error={errors.location?.latitude ? true : false}
+            helperText={errors.location?.latitude?.message}
           />
-          <p>{errors.location?.latitude?.message}</p>
           <Button variant="contained" color="primary" onClick={handleMapOpen}>
             Pick Location
           </Button>
@@ -212,8 +214,9 @@ const Echo: FC = () => {
             autoComplete="off"
             onKeyDown={handleUserKeyDown}
             sx={{ width: 400 }}
+            error={errors.message ? true : false}
+            helperText={errors.message?.message}
           />
-          <p>{errors.message?.message}</p>
 
           <div>
             <label>嗜好情報</label>
