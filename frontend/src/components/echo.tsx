@@ -1,7 +1,7 @@
 import { FC, useEffect, useReducer, useState, useContext } from "react";
 import { fetchAuthSession } from "aws-amplify/auth";
 import { Typography, Button, TextField, Stack, Box } from "@mui/material";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { SubmitHandler, useForm, useFieldArray } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
 import config from "../config";
 
@@ -15,7 +15,9 @@ type EchoInput = {
     longitude: number;  
   };
   message: string;
-  favorites: string[];
+  favorites: {
+    name: string;
+  }[];
 };
 
 let renderCount = 0;
@@ -30,7 +32,9 @@ const Echo: FC = () => {
       longitude: 0
     }, 
     message: "",
-    favorites: ["", ""]
+    favorites: [
+      {name: ""}
+    ]
   });
 
   const { register, handleSubmit, reset, control, formState } = useForm<EchoInput>({
@@ -38,6 +42,11 @@ const Echo: FC = () => {
     values
   });
   const { errors } = formState;
+
+  const { fields, append, remove } = useFieldArray({
+    name: "favorites",
+    control
+  });
 
   const [status, setStatus] = useState("initializing");
   const [messages, setMessages] = useState<string[]>([]);
@@ -197,24 +206,36 @@ const Echo: FC = () => {
           />
           <p>{errors.message?.message}</p>
 
-          <TextField
-            id="favorites"
-            label="嗜好情報-1"
-            size="small"
-            required
-            {...register("favorites.0")}
-            autoComplete="off"
-            sx={{ width: 400 }}
-          />
-          <TextField
-            id="favorites"
-            label="嗜好情報-2"
-            size="small"
-            required
-            {...register("favorites.1")}
-            autoComplete="off"
-            sx={{ width: 400 }}
-          />
+          <div>
+            <label>嗜好情報</label>
+            <div>
+              {fields.map((field: { id: string }, index: number) => (
+                <div key={field.id}>
+                  <TextField
+                  id={`favorites.${index}`}
+                  label={`嗜好情報-${index + 1}`}
+                  size="small"
+                  required
+                  {...register(`favorites.${index}.name` as const)}
+                  autoComplete="off"
+                  sx={{ width: 400 }}
+                  />
+                  <Button
+                  type="button"
+                  onClick={() => remove(index)}
+                  >
+                  削除
+                  </Button>
+                </div>
+              ))}
+              <Button
+                type="button"
+                onClick={() => append({ name: "" })}
+              >
+                追加
+              </Button>
+            </div>
+          </div>
 
           <Button variant="contained" color="primary" type="submit">
             Send
