@@ -112,7 +112,6 @@ const Echo: FC = () => {
     if (client != null) {
       console.log(`sending message: ${input.message}`);
       client.send(input.message);
-      reset({ message: "" });
     }
   };
 
@@ -141,6 +140,13 @@ const Echo: FC = () => {
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      console.log("resetting form...");
+      reset();
+    }
+  }, [isSubmitSuccessful, reset]);
 
   renderCount++;
 
