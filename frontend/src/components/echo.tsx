@@ -1,19 +1,57 @@
-import { FC, useEffect, useReducer, useState } from "react";
+import { FC, useEffect, useReducer, useState, useContext } from "react";
 import { fetchAuthSession } from "aws-amplify/auth";
-import { Typography, Button, TextField, Stack } from "@mui/material";
+import { Typography, Button, TextField, Stack, Box } from "@mui/material";
 import { SubmitHandler, useForm } from "react-hook-form";
 import config from "../config";
 
+import { CurrentLocationContext } from "../Contexts";
+
+import MapPositionPickerDialog from './PositionPicker';
+
 type EchoInput = {
+  latitude: number;
+  longitude: number;
   message: string;
 };
 
 const Echo: FC = () => {
-  const { register, handleSubmit, reset } = useForm<EchoInput>();
+  const [values, setValues] = useState<EchoInput>({ latitude: 0, longitude: 0, message: "" });
+
+  const { register, handleSubmit, reset } = useForm<EchoInput>({
+    defaultValues: { latitude: 0, longitude: 0, message: "" },
+    values,
+    resetOptions: {
+      keepDirtyValues: true, // user-interacted input will be retained
+      keepErrors: true, // input errors will be retained with value update
+    }
+  });
+
   const [status, setStatus] = useState("initializing");
   const [messages, setMessages] = useState<string[]>([]);
   const [client, setClient] = useState<WebSocket>();
   const [closed, forceClose] = useReducer(() => true, false);
+  /// 現在地の状態
+  const currentPosition = useContext(CurrentLocationContext);
+  const [mapOpen, setMapOpen] = useState(false);
+
+  const handleMapOpen = () => {
+    setMapOpen(true);
+  };
+
+  const handleMapClose = () => {
+    setMapOpen(false);
+  };
+
+  const handleMapSelect = (lat: number, long: number): void => {
+    console.log(`lat: ${lat}, long: ${long}`);
+    
+    setValues((prev) => {
+      console.log(`prev: ${prev.latitude}, ${prev.longitude}, ${prev.message}`);       
+      return {latitude: lat, longitude: long, message: prev.message};
+    });
+    
+    setMapOpen(false);
+  };
 
   const initializeClient = async () => {
     const currentSession = await fetchAuthSession();
@@ -55,13 +93,18 @@ const Echo: FC = () => {
   };
 
   const sendMessage: SubmitHandler<EchoInput> = async (input: EchoInput) => {
+    console.log(`latitude: ${input.latitude}, longitude: ${input.longitude}, message: ${input.message}`);
     if (client != null) {
+      console.log(`sending message: ${input.message}`);
       client.send(input.message);
       reset({ message: "" });
     }
   };
 
   const handleUserKeyDown = (e: any) => {
+    console.log(`key: ${e.key}`);
+    console.log(`values: ${values.latitude}, ${values.longitude}, ${values.message}`);       
+
     if (e.key === "Enter" && !e.shiftKey) {
       handleSubmit(sendMessage)(); // this won't be triggered
     }
@@ -88,9 +131,41 @@ const Echo: FC = () => {
       </Typography>
 
       <Stack direction="row" spacing={2} sx={{ m: 5 }}>
+        <Stack direction="column" spacing={2} sx={{ m: 5 }}>
+          <Stack direction="row" spacing={2} sx={{ m: 5 }}>
+            <TextField
+              id="latitude"
+              label="経度"
+              type="number"
+              size="small"
+              required
+              {...register("latitude")}
+              autoComplete="off"
+              sx={{ width: 200 }}
+              defaultValue={currentPosition?.latitude}
+            />
+            <TextField
+              id="longitude"
+              label="緯度"
+              type="number"
+              size="small"
+              required
+              {...register("longitude")}
+              autoComplete="off"
+              sx={{ width: 200 }}
+              defaultValue={currentPosition?.longitude}
+            />
+            <Button variant="contained" color="primary" onClick={handleMapOpen}>
+              Pick Location
+            </Button>
+          </Stack>
+          <Stack>
+            <MapPositionPickerDialog open={mapOpen} onClose={handleMapClose} onSelect={handleMapSelect} />
+          </Stack>
+        </Stack>
         <TextField
           id="message"
-          label="Message"
+          label="メッセージ"
           size="small"
           required
           {...register("message")}

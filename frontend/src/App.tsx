@@ -4,13 +4,14 @@ import "@aws-amplify/ui-react/styles.css";
 import { Authenticator } from "@aws-amplify/ui-react";
 import Echo from "./components/echo";
 import { AppBar, Avatar, Button, Container, Select, SelectChangeEvent, Toolbar, Typography, MenuItem } from "@mui/material";
-import { createContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+
+import { CurrentLocationContext } from "./Contexts";
 import EchoEvents from "./components/echo-events";
 
 function App() {
   const [mode, setMode] = useState<"events" | "apigw">("apigw");
 
-  const CurrentLocationContext = createContext<GeolocationCoordinates | undefined>(undefined);
   const [currentLocation, setCurrentLocation] = useState<GeolocationCoordinates>();
   
   /// 位置情報の監視を開始する
