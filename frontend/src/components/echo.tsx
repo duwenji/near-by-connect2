@@ -38,7 +38,7 @@ const Echo: FC = () => {
       ]
     }
   });
-  const { errors } = formState;
+  const { errors, isDirty, isValid } = formState;
 
   const { fields, append, remove } = useFieldArray({
     name: "favorites",
@@ -239,7 +239,7 @@ const Echo: FC = () => {
             </div>
           </div>
 
-          <Button variant="contained" color="primary" type="submit">
+          <Button variant="contained" color="primary" type="submit" disabled={!isDirty || !isValid}>
             Send
           </Button>
           <Button variant="contained" color="secondary" type="button" onClick={handleGetValues}>
