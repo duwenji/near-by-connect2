@@ -29,8 +29,8 @@ const Echo: FC = () => {
   const { register, handleSubmit, reset, control, formState, getValues, setValue } = useForm<EchoInput>({
     defaultValues: {
       location: {
-        latitude: 0, 
-        longitude: 0
+        latitude: undefined, 
+        longitude: undefined
       }, 
       message: "",
       favorites: [
@@ -38,7 +38,7 @@ const Echo: FC = () => {
       ]
     }
   });
-  const { errors, isDirty, isValid } = formState;
+  const { errors, isDirty, isValid, isSubmitting, isSubmitted, isSubmitSuccessful, submitCount } = formState;
 
   const { fields, append, remove } = useFieldArray({
     name: "favorites",
@@ -239,8 +239,14 @@ const Echo: FC = () => {
             </div>
           </div>
 
-          <Button variant="contained" color="primary" type="submit" disabled={!isDirty || !isValid}>
+          <Button variant="contained" color="primary" type="submit"
+            disabled={!isDirty || !isValid || isSubmitting}>
             Send
+          </Button>
+          <Button variant="contained" color="secondary" type="button" 
+            disabled={!isDirty || !isValid || isSubmitting} 
+            onClick={() => reset()}>
+            Reset
           </Button>
           <Button variant="contained" color="secondary" type="button" onClick={handleGetValues}>
             Get Values
