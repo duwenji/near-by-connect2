@@ -161,6 +161,7 @@ const Echo: FC = () => {
             type="number"
             size="small"
             {...register("location.longitude", {
+              valueAsNumber: true,
               required: {
                 value: true,
                 message: "経度が必須です。"
@@ -176,6 +177,7 @@ const Echo: FC = () => {
             type="number"
             size="small"
             {...register("location.latitude", {
+              valueAsNumber: true,
               required: {
                 value: true,
                 message: "緯度が必須です。"
