@@ -26,20 +26,17 @@ const Echo: FC = () => {
   /// 現在地の状態
   const currentPosition = useContext(CurrentLocationContext);
 
-  const [values, setValues] = useState<EchoInput>({
-    location: {
-      latitude: 0, 
-      longitude: 0
-    }, 
-    message: "",
-    favorites: [
-      {name: ""}
-    ]
-  });
-
-  const { register, handleSubmit, reset, control, formState } = useForm<EchoInput>({
-    defaultValues: values,
-    values
+  const { register, handleSubmit, reset, control, formState, getValues, setValue } = useForm<EchoInput>({
+    defaultValues: {
+      location: {
+        latitude: 0, 
+        longitude: 0
+      }, 
+      message: "",
+      favorites: [
+        {name: ""}
+      ]
+    }
   });
   const { errors } = formState;
 
@@ -65,12 +62,8 @@ const Echo: FC = () => {
   const handleMapSelect = (lat: number, long: number): void => {
     console.log(`lat: ${lat}, long: ${long}`);
     
-    setValues({...values, 
-      location: {
-        latitude: lat, 
-        longitude: long
-      }
-    });
+    setValue("location.longitude", long, { shouldValidate: true, shouldDirty: true, shouldTouch: true });
+    setValue("location.latitude", lat, { shouldValidate: true, shouldDirty: true, shouldTouch: true });
     
     setMapOpen(false);
   };
@@ -125,12 +118,15 @@ const Echo: FC = () => {
 
   const handleUserKeyDown = (e: any) => {
     console.log(`key: ${e.key}`);
-    console.log(`values: ${values.location.latitude}, ${values.location.longitude}, ${values.message}`);       
 
     if (e.key === "Enter" && !e.shiftKey) {
       handleSubmit(sendMessage)(); // this won't be triggered
     }
   };
+
+  const handleGetValues = () => {
+    console.log("handleGetValues...", getValues());
+  }
 
   useEffect(() => {
     initializeClient();
@@ -241,6 +237,9 @@ const Echo: FC = () => {
 
           <Button variant="contained" color="primary" type="submit">
             Send
+          </Button>
+          <Button variant="contained" color="secondary" type="button" onClick={handleGetValues}>
+            Get Values
           </Button>
         </Stack>
       </form>
