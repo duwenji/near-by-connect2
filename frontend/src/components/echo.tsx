@@ -1,7 +1,7 @@
 import { FC, useEffect, useReducer, useState, useContext } from "react";
 import { fetchAuthSession } from "aws-amplify/auth";
 import { Typography, Button, TextField, Stack, Box } from "@mui/material";
-import { SubmitHandler, useForm, useFieldArray } from "react-hook-form";
+import { SubmitHandler, useForm, useFieldArray, FieldErrors } from "react-hook-form";
 import { DevTool } from "@hookform/devtools";
 import config from "../config";
 
@@ -116,6 +116,10 @@ const Echo: FC = () => {
     }
   };
 
+  const onError = (errors: FieldErrors) => {
+    console.log("errors...", errors);
+  };
+
   const handleUserKeyDown = (e: any) => {
     console.log(`key: ${e.key}`);
 
@@ -149,7 +153,7 @@ const Echo: FC = () => {
       <Typography variant="subtitle1" sx={{ color: "#808080" }} gutterBottom>
         status: {status}
       </Typography>
-      <form onSubmit={handleSubmit(sendMessage)} noValidate>
+      <form onSubmit={handleSubmit(sendMessage, onError)} noValidate>
         <Stack direction="row" spacing={2} sx={{ m: 5 }}>
           <TextField
             id="longitude"
