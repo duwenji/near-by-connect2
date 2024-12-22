@@ -26,7 +26,7 @@ const Echo: FC = () => {
   /// 現在地の状態
   const currentPosition = useContext(CurrentLocationContext);
 
-  const { register, handleSubmit, reset, control, formState, getValues, setValue } = useForm<EchoInput>({
+  const { register, handleSubmit, reset, control, formState, getValues, setValue, trigger } = useForm<EchoInput>({
     defaultValues: {
       location: {
         latitude: undefined, 
@@ -36,7 +36,8 @@ const Echo: FC = () => {
       favorites: [
         {name: ""}
       ]
-    }
+    },
+    mode: "onBlur",
   });
   const { errors, isDirty, isValid, isSubmitting, isSubmitted, isSubmitSuccessful, submitCount } = formState;
 
@@ -192,7 +193,7 @@ const Echo: FC = () => {
             autoComplete="off"
             sx={{ width: 300 }}
           />
-          {/* <p>{errors.location.latitude?.message}</p> */}
+          <p>{errors.location?.latitude?.message}</p>
           <Button variant="contained" color="primary" onClick={handleMapOpen}>
             Pick Location
           </Button>
@@ -256,6 +257,9 @@ const Echo: FC = () => {
           </Button>
           <Button variant="contained" color="secondary" type="button" onClick={handleGetValues}>
             Get Values
+          </Button>
+          <Button variant="contained" color="secondary" type="button" onClick={() => trigger()}>
+            Validate
           </Button>
         </Stack>
       </form>
