@@ -3,12 +3,12 @@ import { Typography, Button, TextField, Stack } from "@mui/material";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { events } from "aws-amplify/data";
 
-type EchoInput = {
+type GeoAgentAppSyncEventsInput = {
   message: string;
 };
 
-const EchoEvents: FC = () => {
-  const { register, handleSubmit, reset } = useForm<EchoInput>();
+const GeoAgentAppSyncEvents: FC = () => {
+  const { register, handleSubmit, reset } = useForm<GeoAgentAppSyncEventsInput>();
   const [status, setStatus] = useState("initializing");
   const [messages, setMessages] = useState<string[]>([]);
 
@@ -30,7 +30,7 @@ const EchoEvents: FC = () => {
     return channel;
   };
 
-  const sendMessage: SubmitHandler<EchoInput> = async (input) => {
+  const sendMessage: SubmitHandler<GeoAgentAppSyncEventsInput> = async (input) => {
     await events.post(`/default/test`, { message: input });
   };
 
@@ -91,4 +91,4 @@ const EchoEvents: FC = () => {
   );
 };
 
-export default EchoEvents;
+export default GeoAgentAppSyncEvents;

@@ -2,13 +2,13 @@ import { Amplify, ResourcesConfig } from "aws-amplify";
 import config from "./config";
 import "@aws-amplify/ui-react/styles.css";
 import { Authenticator } from "@aws-amplify/ui-react";
-import Echo from "./components/echo";
+import GeoAgentWebSocket from "./components/GeoAgentWebSocket";
 import { AppBar, Avatar, Button, Container, Select, SelectChangeEvent, Toolbar, Typography, MenuItem } from "@mui/material";
 import { useEffect, useState } from "react";
 
 //import "./App.css";
 import { CurrentLocationContext } from "./Contexts";
-import EchoEvents from "./components/echo-events";
+import GeoAgentAppSyncEvents from "./components/GeoAgentAppSyncEvents";
 
 function App() {
   const [mode, setMode] = useState<"events" | "apigw">("apigw");
@@ -92,7 +92,7 @@ function App() {
                       <MenuItem value={"events"}>AppSync Events</MenuItem>
                       <MenuItem value={"apigw"}>API Gateway WebSocket</MenuItem>
                     </Select>
-                    {mode === "events" ? <EchoEvents /> : <Echo />}
+                    {mode === "events" ? <GeoAgentAppSyncEvents /> : <GeoAgentWebSocket />}
                   </Container>
                 </main>
               </>

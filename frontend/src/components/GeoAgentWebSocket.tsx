@@ -9,7 +9,7 @@ import { CurrentLocationContext } from "../Contexts";
 
 import MapPositionPickerDialog from './PositionPicker';
 
-type EchoInput = {
+type GeoAgentWebSocketInput = {
   location: {
     latitude: number;
     longitude: number;  
@@ -22,11 +22,11 @@ type EchoInput = {
 
 let renderCount = 0;
 
-const Echo: FC = () => {
+const GeoAgentWebSocket: FC = () => {
   /// 現在地の状態
   const currentPosition = useContext(CurrentLocationContext);
 
-  const { register, handleSubmit, reset, control, formState, getValues, setValue, trigger } = useForm<EchoInput>({
+  const { register, handleSubmit, reset, control, formState, getValues, setValue, trigger } = useForm<GeoAgentWebSocketInput>({
     defaultValues: {
       location: {
         latitude: undefined, 
@@ -108,7 +108,7 @@ const Echo: FC = () => {
     setClient(client);
   };
 
-  const onSubmit: SubmitHandler<EchoInput> = async (input: EchoInput) => {
+  const onSubmit: SubmitHandler<GeoAgentWebSocketInput> = async (input: GeoAgentWebSocketInput) => {
     console.log("onSubmit...", input);
     if (client != null) {
       console.log(`sending message: ${input.message}`);
@@ -280,4 +280,4 @@ const Echo: FC = () => {
   );
 };
 
-export default Echo;
+export default GeoAgentWebSocket;
